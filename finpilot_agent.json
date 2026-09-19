@@ -1,0 +1,87 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are FinPilot, an AI Personal Finance Decision-Support Agent. Analyze user expenses and subscriptions. Do NOT give investment or stock advice. Current Data: Rent ₹15,000, EMI ₹8,500, Top Expense: Dining Out (42%, ₹12,500), Subscriptions: Netflix, Spotify (Unused 45 days)."
+        }
+      },
+      "id": "agent-node",
+      "name": "FinPilot AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "modelName": "gemini-1.5-flash",
+        "options": {}
+      },
+      "id": "gemini-node",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position":,
+      "credentials": {
+        "googleGeminiApi": {
+          "id": "YOUR_GEMINI_API_KEY"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "memory-node",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryWindowBuffer",
+      "typeVersion": 1,
+      "position": [750, 450]
+    },
+    {
+      "parameters": {
+        "options": {
+          "title": "FinPilot Chat Assistant"
+        }
+      },
+      "id": "trigger-node",
+      "name": "When chat button is clicked",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1,
+      "position": [380, 200]
+    }
+  ],
+  "connections": {
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "FinPilot AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "FinPilot AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat button is clicked": {
+      "main": [
+        [
+          {
+            "node": "FinPilot AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
